@@ -13,7 +13,6 @@ def testconnection(ip, port):
     sock.close()
     return result
 
-testconnection("127.0.0.1", 80)
 
 def main_menu():
 
@@ -118,9 +117,32 @@ def ask_for_port():
     pass
 
 
-def henadle_single_port_ui():
-    #provides port ui.
-    ip = input("entrt an IP to SCAN: ")
+
+def henadle_single_port_ui(port):
+    # This function will check if a single port is valid (1-65535)
+
+    print("\n---SINGLE PORT SCAN MODE ---")
+    target_ip = ""
+    while True:
+        user_ip =input("Enter Target IP: ").strip()
+        if validate_ip(user_ip)
+        target_ip = user_ip
+        break
+        else:
+            print(f"--> ERROR: {user_ip} is invalid. Enter a valid IPv4.\n")
+    target_port = 0
+    while True:
+        port_input = input("Enter Port (1-65535): ").strip()
+        if validate_single_port(port_input):
+            target_port = int(port_input)
+            break
+    
+        else:
+            print(f"ERROR {port_input} is invalid.\n")
+
+    print(f"\n[*] Starting Scan on {target_ip}:{target_port}...\n")
+    testconnection(target_ip, target_port)
+    input("\nPress Enter to return to menu...")
 
 
 
