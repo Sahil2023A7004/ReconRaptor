@@ -1,134 +1,79 @@
-#ReconRaptor v1.0
 import socket
-def testconnection(ip, port):
 
+ip = ""
+port = ""
+
+def run_single_port_scan(port, ip):
     print(f"Testing connection to {ip}:{port}...\n")
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.settimeout(2)
-    result = sock.connect_ex((ip,port))
+    result = sock.connect_ex((ip, port))
     if result == 0:
-        print(f"port : {port} is OPEN")
+        print(f"Port {port} is OPEN")
     else:
-        print(f"port :{port} is CLOSED")
+        print(f"Port {port} is CLOSED")
     sock.close()
     return result
 
-
-def main_menu():
-
-    while True:
-        show_main_menu()   # Print the menu
-        choice = get_user_input("Enter choice: ")
-        if choice == 1:
-            scan_menu()
-           
-        if not choice.isdigit():
-            print("Invalid input — please enter a number from 1 to 6.\n")
-            continue
-
-        choice = int(choice)
-
-        if choice < 1 or choice > 6:
-            print("Invalid choice — please enter a number from 1 to 6.\n")
-            continue
-
-        print(f"You selected option {choice}")
-        break
-
-
-
-
-
-
-
-def get_user_input(prompt):
-    # This function will take input from user
-    user_input = input(prompt)
-    user_input = user_input.strip()
-    return user_input
-
-
-def validate_single_port(port):
-    # This function will check if a single port is valid (1-65535)
-
-    #Step 1:-  Strip whitespaces
-    clean_port = port.strip()
-
-    #Step 2:- Check if port is empty
-    if clean_port == "":
-        return False
-        
-    #Step 3:- Chcek if the port input is digits only
-    if not clean_port.isdigit():
-        return False
-
-    #Step 4:- Convert to integer becuse python takes input as string only
-    port_num = int(clean_port)
-
-    #Step 5:- Check Range 
-    if 1 <= port_num <= 65535:
-        return True
+def portt():
+    global port
+    x = input("Enter port to scan (1-65535): ").strip()
+    if x.isdigit():
+        port = int(x)
+        if port in range(1, 65536):
+            run_single_port_scan(port, ip)
+        else:
+            print("Error: Port out of range (1-65535)")
+            portt()
     else:
-        return False
-
-       
-
-def run_single_port_scan(port, scan_type):
-    # This function will perform single port scan (later)
-    pass
-
-
-def show_results(result):
-    # This function will show scan results
-    pass
-
-
-
-    
-
-
-
-
-def port():
-    #Asks for port
-choice = input(print("enter port to scan 1-655535")).strip()
-choice = int(choice)
-if choice in range 1 65535:
-    
+        print("Error: Please enter digits only")
+        portt()
 
 def validate_ip(ip):
-    # Quick check for empty string
     if not ip or ip.strip() == "":
         return False
     try:
-        # We use the socket library itself to check if the IP is valid!
         socket.inet_aton(ip)
         return True
     except socket.error:
-        # If socket throws an error, it's not a valid IPv4 address
         return False
-port()
 
 def scan_menu():
-    # This function will show port scan types (syn, aggressive, stealth)
-    choice = input("CHOOSE A SCAN TYPE:(1-4) ").strip()
-    choice = int(choice)
-    print("1) SYN Scan")                   
+    global ip
+    print("\nCHOOSE A SCAN TYPE:")
+    print("1) SYN Scan")
     print("2) Stealth Scan")
-    print("3) Agressive Scan")
+    print("3) Aggressive Scan")
     print("4) Back")
-    if choice in [1, 2, 3]:
-        ip = input("Enter your IPv4: ").strip()
-        validate_ip(ip)
-    elif choice == 4:
-        show_main_menu()
+    
+    raw_choice = input("Enter choice (1-4): ").strip()
+    
+    if raw_choice.isdigit():
+        choice = int(raw_choice)
+        
+        if choice == 1:
+            temp_ip = input("Enter your IPv4: ").strip()
+            if validate_ip(temp_ip) == True:
+                ip = temp_ip
+                portt()
+            else:
+                print("Error: Enter a valid IPv4 address.")
+                scan_menu()
+                
+        elif choice in range(2, 4):
+             print("Coming soon...")
+             scan_menu()
+             
+        elif choice == 4:
+             show_main_menu()
+        else:
+             print("Error: Select 1-4.")
+             scan_menu()
     else:
-        print("error enter a valid choice 1-4")
+        print("Error: Please enter a number.")
         scan_menu()
 
-
 def show_main_menu():
-    # This function will display the main menu options
     print("=============================")
     print("      RECON RAPTOR v1.0      ") 
     print("=============================")
@@ -138,10 +83,24 @@ def show_main_menu():
     print("5) Domain Scan")
     print("6) Exit")
     print("")
-    choice = input(print"enter your choice..").srtip()
-    if choice == 1:
-        scan_menu()
-
-# Entry point — run the program
-show_main_menu()
     
+    raw_choice = input("Enter your choice: ").strip()
+    
+    if raw_choice.isdigit():
+        choice = int(raw_choice)
+        if choice == 1:
+            scan_menu()
+        elif choice in range(2, 6): 
+            print("Coming soon... Please enter 1 to scan or 6 to exit.")
+            show_main_menu()
+        elif choice == 6:
+            print("Exiting...")
+            return
+        else:
+            print("Enter correct choice 1-6")
+            show_main_menu()
+    else:
+        print("Error: Please enter a number.")
+        show_main_menu()
+
+show_main_menu()
