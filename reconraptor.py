@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 import socket
 
 ip = ""
@@ -21,13 +21,26 @@ def run_single_port_scan(target_port, target_ip):
     else:
         print(f"Port {target_port} is CLOSED")
 
-def run_range_scan(start_port, end_port):
-    print(f"Scanning IP: {ip} from {start_port} to {end_port}...")
-    print("PORT\tSTATUS")
-    print("-" * 20)
+def run_range_scan(target_ip, start_port, end_port):
+    print(f"\nDEBUG: Starting scan on IP: '{target_ip}'") # Debug line
+    print(f"Scanning ports {start_port} to {end_port}...")
+    print("PORT\tSTATUS\tERROR CODE") # Added Error Code column
+    print("-" * 30)
+    
     for p in range(start_port, end_port + 1):
-        if check_port(ip, p):
-            print(f"{p}\tOPEN")
+        # We call check_port, but we also want to see the result code!
+        # So let's reproduce the check logic here temporarily for debugging
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(1) # Increased timeout to 1 second
+        
+        result = sock.connect_ex((target_ip, p))
+        sock.close()
+        
+        if result == 0:
+            print(f"{p}\tOPEN\t{result}")
+        else:
+            # This will show us WHY it failed (111=Closed, 11=Timeout)
+            print(f"{p}\tCLOSED\t{result}")
 
 def portt():
     global port
@@ -54,6 +67,12 @@ def validate_ip(ip):
 
 def range_scan_menu():
     global ip
+    
+    # Safety Check: Did we get the IP?
+    if ip == "":
+        print("DEBUG ERROR: IP variable is empty!")
+        return
+
     choice = input("Enter port range (e.g. 20-80): ").strip()
     try:
         ports = choice.split("-")
@@ -64,9 +83,10 @@ def range_scan_menu():
             print("Error: Start port must be smaller than end port.")
             range_scan_menu()
         else:
-            run_range_scan(start_port, end_port)
-    except:
-        print("ERROR: Please use format 'Start-End' (e.g. 20-80)")
+            # PASS THE IP HERE explicitly
+            run_range_scan(ip, start_port, end_port)
+    except Exception as e:
+        print(f"ERROR: {e}")
         range_scan_menu()
 
 def scan_menu():

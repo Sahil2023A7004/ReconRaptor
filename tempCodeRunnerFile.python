@@ -1,19 +1,33 @@
+
 import socket
 
 ip = ""
 port = ""
 
-def run_single_port_scan(port, ip):
-    print(f"Testing connection to {ip}:{port}...\n")
+def check_port(target_ip, port_num):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.settimeout(2)
-    result = sock.connect_ex((ip, port))
-    if result == 0:
-        print(f"Port {port} is OPEN")
-    else:
-        print(f"Port {port} is CLOSED")
+    sock.settimeout(0.5)
+    result = sock.connect_ex((target_ip, port_num))
     sock.close()
-    return result
+    if result == 0:
+        return True
+    else:
+        return False
+
+def run_single_port_scan(target_port, target_ip):
+    print(f"Testing connection to {target_ip}:{target_port}...\n")
+    if check_port(target_ip, target_port):
+        print(f"Port {target_port} is OPEN")
+    else:
+        print(f"Port {target_port} is CLOSED")
+
+def run_range_scan(start_port, end_port):
+    print(f"Scanning IP: {ip} from {start_port} to {end_port}...")
+    print("PORT\tSTATUS")
+    print("-" * 20)
+    for p in range(start_port, end_port + 1):
+        if check_port(ip, p):
+            print(f"{p}\tOPEN")
 
 def portt():
     global port
@@ -37,6 +51,23 @@ def validate_ip(ip):
         return True
     except socket.error:
         return False
+
+def range_scan_menu():
+    global ip
+    choice = input("Enter port range (e.g. 20-80): ").strip()
+    try:
+        ports = choice.split("-")
+        start_port = int(ports[0])
+        end_port = int(ports[1])
+        
+        if start_port > end_port:
+            print("Error: Start port must be smaller than end port.")
+            range_scan_menu()
+        else:
+            run_range_scan(start_port, end_port)
+    except:
+        print("ERROR: Please use format 'Start-End' (e.g. 20-80)")
+        range_scan_menu()
 
 def scan_menu():
     global ip
@@ -74,8 +105,9 @@ def scan_menu():
         scan_menu()
 
 def show_main_menu():
+    global ip
     print("=============================")
-    print("      RECON RAPTOR v1.0      ") 
+    print("      RECON RAPTOR v1.2      ") 
     print("=============================")
     print("1) Single Port Scan")
     print("2) Port Range Scan")
@@ -88,10 +120,15 @@ def show_main_menu():
     
     if raw_choice.isdigit():
         choice = int(raw_choice)
+        
         if choice == 1:
             scan_menu()
-        elif choice in range(2, 6): 
-            print("Coming soon... Please enter 1 to scan or 6 to exit.")
+        elif choice == 2:
+            if ip == "":
+                ip = input("Enter Target IP: ").strip()
+            range_scan_menu()
+        elif choice in range(3, 6): 
+            print("Coming soon... Please enter 1 or 2 to scan.")
             show_main_menu()
         elif choice == 6:
             print("Exiting...")
@@ -103,4 +140,5 @@ def show_main_menu():
         print("Error: Please enter a number.")
         show_main_menu()
 
-show_main_menu()
+
+    show_main_menu()
