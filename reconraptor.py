@@ -1,8 +1,14 @@
 #!/usr/bin/env python3
+from scapy.all import IP, ICMP, sr1
 import socket
-
+import sys
 ip = ""
 port = ""
+
+def stealth_scan(target_ip, port):
+   packet = IP(dst=target_ip)/TCP(dport=port, flags="S")
+
+
 
 def check_port(target_ip, port_num):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -94,10 +100,9 @@ def scan_menu():
     print("\nCHOOSE A SCAN TYPE:")
     print("1) SYN Scan")
     print("2) Stealth Scan")
-    print("3) Aggressive Scan")
-    print("4) Back")
+    print("3) Back")
     
-    raw_choice = input("Enter choice (1-4): ").strip()
+    raw_choice = input("Enter choice (1-3): ").strip()
     
     if raw_choice.isdigit():
         choice = int(raw_choice)
@@ -111,14 +116,18 @@ def scan_menu():
                 print("Error: Enter a valid IPv4 address.")
                 scan_menu()
                 
-        elif choice in range(2, 4):
-             print("Coming soon...")
-             scan_menu()
+        elif choice == 2:
+             target = input("Enter IP to ping: ").strip()
+             if validate_ip(target):
+                 check_host_up(target)
+             else:
+                 print("Invalid IP.")
+             show_main_menu()
              
-        elif choice == 4:
+        elif choice == 3:
              show_main_menu()
         else:
-             print("Error: Select 1-4.")
+             print("Error: Select 1-3.")
              scan_menu()
     else:
         print("Error: Please enter a number.")
@@ -131,9 +140,8 @@ def show_main_menu():
     print("=============================")
     print("1) Single Port Scan")
     print("2) Port Range Scan")
-    print("3) Single IP Scan")
-    print("5) Domain Scan")
-    print("6) Exit")
+    print("3) Domain Scan")
+    print("5) Exit")
     print("")
     
     raw_choice = input("Enter your choice: ").strip()
@@ -147,14 +155,14 @@ def show_main_menu():
             if ip == "":
                 ip = input("Enter Target IP: ").strip()
             range_scan_menu()
-        elif choice in range(3, 6): 
+        elif choice in range(4, 5): 
             print("Coming soon... Please enter 1 or 2 to scan.")
             show_main_menu()
-        elif choice == 6:
+        elif choice == 5:
             print("Exiting...")
             return
         else:
-            print("Enter correct choice 1-6")
+            print("Enter correct choice 1-5")
             show_main_menu()
     else:
         print("Error: Please enter a number.")
