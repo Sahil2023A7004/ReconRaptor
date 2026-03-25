@@ -72,7 +72,7 @@ def portt1():
             run_single_port_scan(port, ip)
         else:
             print("Error: Port out of range (1-65535)")
-            portt()
+            portt1()
     else:
         print("Error: Please enter digits only")
         portt1()
@@ -83,7 +83,7 @@ def portt2():
     if x.isdigit():
         port = int(x)
         if port in range(1, 65536):
-            stealth_scan(port, ip)
+            stealth_scan(ip, port)
         else:
             print("Error: Port out of range (1-65535)")
             portt2()
@@ -145,12 +145,11 @@ def scan_menu():
                 print("Error: Enter a valid IPv4 address.")
                 scan_menu()
                 
-        elif choice == 2:
-             target = input("Enter IP to ping: ").strip()
-             if validate_ip(target):
-                 check_host_up(target)
+    elif choice == 2:
+        target = input("Enter IP to ping: ").strip()
+         if validate_ip(target):
                 portt2()
-             else:
+         else:
                  print("Invalid IP.")
              show_main_menu()
              
@@ -159,7 +158,7 @@ def scan_menu():
         else:
              print("Error: Select 1-3.")
              scan_menu()
-    else:
+         else:
         print("Error: Please enter a number.")
         scan_menu()
 
