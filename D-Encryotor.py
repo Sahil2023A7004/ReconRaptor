@@ -6,8 +6,11 @@ def key_gen():
     with open("secret.key", "wb") as key_file:
         key_file.write(key)
 
+
 def load_key():
     return open("secret.key", "rb").read()
+
+
 
 def encrypt_file(filename, key):
     f = Fernet(key)
@@ -19,6 +22,8 @@ def encrypt_file(filename, key):
     with open(filename, "wb") as file:
         file.write(encrypted_data)
 
+
+
 def decrypt_file(filename, key):
     f = Fernet(key)
     with open(filename, "rb") as file:
@@ -28,6 +33,8 @@ def decrypt_file(filename, key):
     
     with open(filename, "wb") as file:
         file.write(decrypted_data)
+
+
 
 if __name__ == "__main__":
     choice = input("Enter mode (1==gen/2==enc/3==dec): ")

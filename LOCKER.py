@@ -35,6 +35,7 @@ def encrypt_file(filename, key):
         file.write(encrypted_data)
     print(f"[+] File '{filename}' has been encrypted.")
 
+
 def decrypt_file(filename, key):
     """
     Given a filename (str) and key (bytes), it decrypts the file and writes it back.

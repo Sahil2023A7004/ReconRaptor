@@ -1,13 +1,28 @@
 #!/usr/bin/env python3
-from scapy.all import IP, ICMP, sr1
+from scapy.all import IP, ICMP, sr1, send
 import socket
 import sys
 ip = ""
 port = ""
 
 def stealth_scan(target_ip, port):
-   packet = IP(dst=target_ip)/TCP(dport=port, flags="S")
-
+    timeout = 1
+    packet = IP(dst=target_ip)/TCP(dport=port, flags="S")
+    response = sr1(packet, timeout=timeout, verbose=0)
+    
+    if response is None:
+        print("PORT is FILTERED")
+    elif response.haslayer(TCP):
+        flags = response.getlayer(TCP).flags
+        
+        if flags == 0x12:
+            rst = TCP(dport=port, flags="R")
+            close = IP(dst=target_ip)/rst
+            send(close, verbose=0)
+            print("PORT is OPEN")
+            
+        elif flags == 0x14:
+            print("PORT is CLOSED")
 
 
 def check_port(target_ip, port_num):
@@ -48,7 +63,7 @@ def run_range_scan(target_ip, start_port, end_port):
             # This will show us WHY it failed (111=Closed, 11=Timeout)
             print(f"{p}\tCLOSED\t{result}")
 
-def portt():
+def portt1():
     global port
     x = input("Enter port to scan (1-65535): ").strip()
     if x.isdigit():
@@ -60,7 +75,21 @@ def portt():
             portt()
     else:
         print("Error: Please enter digits only")
-        portt()
+        portt1()
+
+def portt2():
+    global port
+    x = input("Enter port to scan (1-65535): ").strip()
+    if x.isdigit():
+        port = int(x)
+        if port in range(1, 65536):
+            stealth_scan(port, ip)
+        else:
+            print("Error: Port out of range (1-65535)")
+            portt2()
+    else:
+        print("Error: Please enter digits only")
+        portt2()
 
 def validate_ip(ip):
     if not ip or ip.strip() == "":
@@ -111,7 +140,7 @@ def scan_menu():
             temp_ip = input("Enter your IPv4: ").strip()
             if validate_ip(temp_ip) == True:
                 ip = temp_ip
-                portt()
+                portt1()
             else:
                 print("Error: Enter a valid IPv4 address.")
                 scan_menu()
@@ -120,6 +149,7 @@ def scan_menu():
              target = input("Enter IP to ping: ").strip()
              if validate_ip(target):
                  check_host_up(target)
+                portt2()
              else:
                  print("Invalid IP.")
              show_main_menu()
