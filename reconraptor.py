@@ -7,15 +7,25 @@ import socket
 #  CORE UTILITIES
 # ─────────────────────────────────────────
 
-def validate_ip(ip):
-    if not ip or ip.strip() == "":
-        return False
-    try:
-        socket.inet_aton(ip)
-        return True
-    except socket.error:
-        return False
+def validate_ip():
+    while True:
+        ip = input("Enter the target IPv4 address:").strip()
+        try:
+            socket.inet_aton(ip)
+            #call port fuction here and send ip as argument
+            return ip
+        except socket.error:
+            print("Invalid IP address format. Please enter a valid IPv4 address.")
 
+def validate_domain():
+    while True:
+        domain = input("Enter the target domain name:").strip()
+        try:
+            ip = socket.gethostbyname(domain)
+            print(f"Domain {domain} resolved to IP: {ip}")
+            return ip
+        except socket.gaierror:
+            print("Invalid domain name. Please enter a valid domain.")
 
 # ─────────────────────────────────────────
 #  CORE SCANNING LOGIC
@@ -66,9 +76,27 @@ def run_range_scan(target_ip, start_port, end_port):
             print(f"{p:<10}CLOSED")
 
 
-# ─────────────────────────────────────────
-#  ENTRY POINT  (placeholder for new menu)
-# ─────────────────────────────────────────
+    def main_menu():
+        print("------------------------------------")
+        print("⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡")
+        print("_-_-_🦕🦖🛜RECONRAPTOR🦕🦖🛜 _-_-_")
+        print("-----------------------------------")
+        print(" Enter 1 for IP ")
+        print(" Enter 2 for Domain ")
+        while True:
+         choice = input("Enter your choice: ")
+         if choice.isdigit():
+            choice = int(choice)
+            if choice == 1:
+                validate_ip()
+                return
+            elif choice == 2:
+                validate_domain()
+                return
+            else:
+                print("Invalid choice. Please enter 1 or 2.")
+         
+                 
 
 if __name__ == "__main__":
     pass  # new menu flow goes here
