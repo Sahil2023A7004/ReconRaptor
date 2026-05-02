@@ -6,6 +6,8 @@ import time
 import sys
 
 
+#BANNERS FOR FUN
+
 QUOTES = [
     "The quieter you become, the more you can hear.",
     "Know your enemy and know yourself.",
@@ -94,6 +96,8 @@ def show_banner():
 
 
 
+#CORE UTILITIES AND DATA VALIDATION
+
 def validate_port():
     while True:
         port = input("Enter the target port number (1-65535): ").strip()
@@ -121,7 +125,7 @@ def validate_ip():
     while True:
         ip = input("Enter the target IPv4 address: ").strip()
         try:
-            socket.inet_aton(ip)
+            socket.inet_pton(socket.AF_INET, ip)
             port = validate_port()
             scan_menu(ip, port)
             return
@@ -142,6 +146,8 @@ def validate_domain():
             print("Invalid domain name. Please enter a valid domain.")
 
 
+
+#CORE SCANNING LOGIC
 def stealth_scan(target_ip, port):
     timeout = 1
     packet = IP(dst=target_ip) / TCP(dport=port, flags="S")
@@ -197,7 +203,7 @@ def stealth_range_scan(target_ip, start_port, end_port):
         response = sr1(packet, timeout=1, verbose=0)
 
         if response is None:
-            print(f"{p:<10}FILTERED")
+            print(f"{p:<10}FILTERED BY FIREWALL")
         elif response.haslayer(TCP):
             flags = response.getlayer(TCP).flags
 
@@ -210,7 +216,7 @@ def stealth_range_scan(target_ip, start_port, end_port):
             elif flags == 0x14:
                 print(f"{p:<10}CLOSED")
 
-
+#MENUS
 
 def scan_menu(target_ip, port):
     print("------------------------------------")
