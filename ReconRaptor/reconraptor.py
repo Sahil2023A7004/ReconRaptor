@@ -3,6 +3,8 @@ from scapy.all import IP, TCP, sr1, send
 import socket
 import random
 import time
+import sys
+
 
 QUOTES = [
     "The quieter you become, the more you can hear.",
@@ -91,6 +93,7 @@ def show_banner():
     time.sleep(0.5)
 
 
+
 def validate_port():
     while True:
         port = input("Enter the target port number (1-65535): ").strip()
@@ -137,7 +140,7 @@ def validate_domain():
             return
         except socket.gaierror:
             print("Invalid domain name. Please enter a valid domain.")
-           
+
 
 def stealth_scan(target_ip, port):
     timeout = 1
@@ -207,6 +210,8 @@ def stealth_range_scan(target_ip, start_port, end_port):
             elif flags == 0x14:
                 print(f"{p:<10}CLOSED")
 
+
+
 def scan_menu(target_ip, port):
     print("------------------------------------")
     print("⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡")
@@ -238,12 +243,13 @@ def scan_menu(target_ip, port):
                     return
                 elif again == "n":
                     print("\n\033[92m[ ReconRaptor signing off... stay stealthy 🦖 ]\033[0m\n")
-                    return
+                    sys.exit(0)
                 else:
                     print("Please enter y or n.")
         else:
             print("Invalid choice. Please enter 1 or 2.")
-            
+
+
 def main_menu():
     show_banner()
     print("------------------------------------")
