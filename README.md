@@ -44,7 +44,7 @@ pip install scapy --break-system-packages
 ### 3. Give execute permission
 
 ```bash
-chmod +x recon_raptor.py
+chmod +x reconraptor.py
 ```
 
 ---
@@ -54,7 +54,7 @@ chmod +x recon_raptor.py
 ReconRaptor must be run as root due to raw packet operations used in stealth scanning.
 
 ```bash
-sudo python3 recon_raptor.py
+sudo python3 reconraptor.py
 ```
 
 ---
