@@ -231,11 +231,19 @@ def scan_menu(target_ip, port):
                     stealth_range_scan(target_ip, port[0], port[1])
                 else:
                     stealth_scan(target_ip, port)
-            return
+            while True:
+                again = input("\nScan again? (y/n): ").strip().lower()
+                if again == "y":
+                    main_menu()
+                    return
+                elif again == "n":
+                    print("\n\033[92m[ ReconRaptor signing off... stay stealthy 🦖 ]\033[0m\n")
+                    return
+                else:
+                    print("Please enter y or n.")
         else:
             print("Invalid choice. Please enter 1 or 2.")
-
-
+            
 def main_menu():
     show_banner()
     print("------------------------------------")
